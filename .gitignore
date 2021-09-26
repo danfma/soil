@@ -1,2 +1,6 @@
 bin
 obj
+.idea
+.vscode
+
+/Kool.sln.DotSettings.user
