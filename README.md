@@ -185,10 +185,32 @@ while not stack.empty {
 }
 ```
 
-#### for statement
+#### for-in statement
 
 ```
 for item in list {
+}
+```
+
+* simulating a for with a range and a jump to change the current index
+
+```
+for i in (0..10) {
+  if i != 0 and i == 4 {
+    jump 5
+  }
+
+  print(i)
+}
+
+// equivalent to the following javascript-code
+for (let i = 0; i < 11; i += 1) {
+  if (i !== 0 && i === 4) {
+    i += 5;
+    continue;
+  }
+
+  console.log('i', i)
 }
 ```
 
@@ -237,6 +259,8 @@ func fibonacci(n: UInt): UInt =>
   else fibonacci(n - 1) + fibonacci(n - 2)
 ```
 
+* Pass by value vs ref
+
 ```
 func passByValue(value: Int) {
   value += 1
@@ -252,6 +276,23 @@ passByValue(x)
 print(x) // prints 10
 passByRef(ref x)
 print(x) // prints 11
+```
+
+* Closure
+
+```
+// shorter-version
+func inc(increment: Int = 1) => (value: Int) => value + increment
+
+// inner function inferred from outer type
+func inc(increment: Int = 1): Func<(Int), Int> {
+  return value => value + increment
+}
+
+// all typed
+func inc(increment: Int = 1): Func<(value: Int), Int> {
+  return (value: Int): Int => value + increment
+}
 ```
 
 ```
@@ -278,7 +319,7 @@ record class Point(
   constructor(other: Point) 
     : this(other.x, other.y)
   
-  let length: Int => Math.sqrt(x * x + y * y)
+  prop length: Int => Math.sqrt(x * x + y * y)
 }
 
 // same as
