@@ -24,13 +24,13 @@ namespace Kool.Lang.Tests.Syntax
                     new NameIdentifier("x"),
                     new ConstantExpression(new IntValue(10))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
 
         [Fact]
         public void ParseStringVariableDeclaration()
         {
-            var text = @"let name = ""Daniel""";
+            var text = @"var name = ""Daniel""";
             var result = ParserHelper.Parse(_grammar, text);
 
             result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -42,13 +42,13 @@ namespace Kool.Lang.Tests.Syntax
                     new NameIdentifier("name"),
                     new ConstantExpression(new StringValue("Daniel"))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
 
         [Fact]
         public void ParseBooleanTrueVariableDeclaration()
         {
-            var text = @"let finished = true";
+            var text = @"var finished = true";
             var result = ParserHelper.Parse(_grammar, text);
 
             result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -60,13 +60,13 @@ namespace Kool.Lang.Tests.Syntax
                     new NameIdentifier("finished"),
                     new ConstantExpression(new BooleanValue(true))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
 
         [Fact]
         public void ParseBooleanFalseVariableDeclaration()
         {
-            var text = @"let finished = false";
+            var text = @"var finished = false";
             var result = ParserHelper.Parse(_grammar, text);
 
             result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -78,7 +78,7 @@ namespace Kool.Lang.Tests.Syntax
                     new NameIdentifier("finished"),
                     new ConstantExpression(new BooleanValue(false))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
     }
 }

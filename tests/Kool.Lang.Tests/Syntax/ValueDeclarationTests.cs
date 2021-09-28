@@ -24,7 +24,7 @@ namespace Kool.Lang.Tests.Syntax
                     new NameIdentifier("x"),
                     new ConstantExpression(new IntValue(10))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
 
         [Fact]
@@ -42,7 +42,7 @@ namespace Kool.Lang.Tests.Syntax
                     new NameIdentifier("name"),
                     new ConstantExpression(new StringValue("Daniel"))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace Kool.Lang.Tests.Syntax
                     new NameIdentifier("finished"),
                     new ConstantExpression(new BooleanValue(true))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace Kool.Lang.Tests.Syntax
                     new NameIdentifier("finished"),
                     new ConstantExpression(new BooleanValue(false))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace Kool.Lang.Tests.Syntax
                     new TypeIdentifier("Bool"),
                     new ConstantExpression(new BooleanValue(false))));
 
-            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
     }
 }
