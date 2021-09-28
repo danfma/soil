@@ -28,6 +28,22 @@ Kool is almost the Kotlin language with a few changes in the syntax and, obvious
 creating it for fun, I'm a father of a newborn baby (yes, I am not sleeping well by these days!), thus I don't have
 enough time to create something better for now...
 
+### Value declaration (non-mutable)
+
+- `let x = 10`
+- `let x: Int = 10`
+- `let name = "Daniel"`
+- `let finished = false`
+- `let finished: Bool = default`
+
+### Variable declaration (mutable)
+
+- `var x = 10`
+- `var x: Int = 10`
+- `var name = "Daniel"`
+- `var finished = false`
+- `var finished: Bool = default`
+
 ### Primitive Types
 
 - [ ] `Char`
@@ -37,24 +53,28 @@ enough time to create something better for now...
 - [ ] `Int64`
 - [ ] `Float`
 - [ ] `Double`
-- [ ] `Boolean`
+- [ ] `Bool`
 - [ ] `String`
 
-### Value declaration (non-mutable)
+### Special primitive types
 
-- `let x = 10`
-- `let x: Int = 10`
-- `let name = "Daniel"`
-- `let finished = false`
-- `let finished: Boolean = default`
+- [ ] `Any` (any other type - the base type of all types)
+- [ ] `Void` (no other type - the void, no value accepted)
+- [ ] `Number` (base type for any type of number)
+- [ ] `Range`
+- [ ] `Index`
 
-### Variable declaration (mutable)
+### Nullability
 
-- `var x = 10`
-- `var x: Int = 10`
-- `var name = "Daniel"`
-- `var finished = false`
-- `var finished: Boolean = default`
+By default, not value accepts `null` in the language. You have to explicitly define it
+as `nullable` to make that work.
+
+For example:
+
+```
+let checked: Bool? = null
+let enabled: Bool = null // it will show an error
+```
 
 ### Expressions
 
@@ -181,7 +201,7 @@ switch grade {
 
 ```
 while not stack.empty {
-  print("Next
+  print(">> ${stack.pop()}")
 }
 ```
 
@@ -240,6 +260,120 @@ let numberAsString = when digit {
   2 => "two"
   3 => "three"
   else => "four"
+}
+```
+
+## Namespaces
+
+```
+// per-file namespace
+namespace My.Helpers
+
+// use non-ambiguous namespace inferred from the referenced libraries
+use Kool
+// use non-ambiguous static class members 
+use Kool.Math.*
+// explicitly specify the assembly or package and then import its namespace
+import "MyLib" use Some:Namespace
+
+func sum(a: Int, b: Int): Int => a + b
+func subtract(a: Int, b: Int): Int => a - b
+
+record class Point(let x: Int, let y: Int) {
+  prop length: Int => sqrt(x * x + y * y) as Int
+}
+```
+
+## Classes
+
+All classes are reference types by default.
+
+```
+class Person {
+  // mutable fields (use let for readonly)
+  var name: String = ""
+  var surname: String? = null
+  var age: Int = 0
+  
+  prop fullName: String => surname is not null ? "${name} ${surname}" : name
+  
+  func setName(name: String, surname: String, age: Int? = null) {
+    this.name = name
+    this.surname = surname
+    
+    if (age is not null) {
+      this.age = age // automatic casting from Int? to Int
+    }
+  }
+  
+  override func toString(): String {
+    return """Person { name = "${name}" }"""
+  }
+}
+
+let person = Person()
+person.setName("John", "Doe")
+```
+
+## Struct
+
+All structs are value types by default.
+
+```
+struct Length(
+  var value: Int = 0
+)
+
+func extend(length: Length): Length {
+  length.value++
+  return length
+}
+
+let source = Length()
+let result = extend(source)
+
+print(source.value) // prints 0
+print(result.value) // prints 1
+print(if source === result then "equal" else "not equal") // prints "not equal"
+```
+
+## Enum
+
+```
+// simple enum
+enum ProcessStatus {
+  New,
+  Ready,
+  Run,
+  Terminated
+}
+
+var x = ProcessStatus.New
+x = ProcessStatus.Ready
+
+// enum with values
+enum class LinkedListNode {
+  Node(value: Int, next: LinkedListNode = None),
+  None
+}
+
+var list = LinkedListNode.Node(1, LinkedListNode.Node(2))
+
+print(list) // output: Node { value = 1, next = Node { value = 2, next = None } }
+
+// enum as struct (value-type)
+enum struct Pos {
+  Top(value: Int),
+  Bottom(value: Int)
+}
+```
+
+## Generics
+
+```
+func sum<T>(a: T, b: T): Int
+  where T extends Number {
+  return a + b
 }
 ```
 
@@ -350,7 +484,7 @@ class Point(x: Int = 0, y: Int = 0) {
   // fully-simplified getter-only definition
   prop length: Int => Math.sqrt(x * x + y * y)
   
-  override func equals(other: Any): Boolean {
+  override func equals(other: Any): Bool {
     return other is Point and x == other.x and y == other.y
   }
   

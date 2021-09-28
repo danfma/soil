@@ -80,5 +80,24 @@ namespace Kool.Lang.Tests.Syntax
 
             producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
         }
+
+        [Fact]
+        public void ParseBooleanValueWithType()
+        {
+            var text = @"let finished: Bool = false";
+            var result = ParserHelper.Parse(_grammar, text);
+
+            result.Status.Should().Be(ParseTreeStatus.Parsed);
+
+            var producedSyntaxNode = _grammar.Translate(result.Root);
+
+            var expectedSyntaxNode = new CompilationUnit(
+                new ValueDeclaration(
+                    new NameIdentifier("finished"),
+                    new TypeIdentifier("Bool"),
+                    new ConstantExpression(new BooleanValue(false))));
+
+            producedSyntaxNode.Should().BeEquivalentTo(expectedSyntaxNode);
+        }
     }
 }

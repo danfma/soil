@@ -22,7 +22,18 @@
 
     public abstract record Declaration : Statement;
 
-    public record ValueDeclaration(NameIdentifier Name, Expression Initializer) : Declaration;
+    public record TypeIdentifier(string Name) : Identifier;
+
+    public record ValueDeclaration(
+        NameIdentifier Name,
+        TypeIdentifier? TypeName,
+        Expression Initializer) : Declaration
+    {
+        public ValueDeclaration(NameIdentifier name, Expression expression) 
+            : this(name, null, expression)
+        {
+        }
+    }
 
     public record VariableDeclaration(NameIdentifier Name, Expression Initializer) : Declaration;
 

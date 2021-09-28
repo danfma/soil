@@ -10,38 +10,47 @@ namespace Kool.Lang.Syntax
         public KoolGrammarV1()
         {
             // comments
-            var lineComment = new CommentTerminal(nameof(Symbol.LineComment), "//", "\r", "\n", "\u2028", "\u2029");
-            var blockComment = new CommentTerminal(nameof(Symbol.BlockComment), "/*", "*/");
+            var lineComment = new CommentTerminal(nameof(TokenKind.LineComment), "//", "\r", "\n", "\u2028", "\u2029");
+            var blockComment = new CommentTerminal(nameof(TokenKind.BlockComment), "/*", "*/");
 
             NonGrammarTerminals.Add(lineComment);
             NonGrammarTerminals.Add(blockComment);
 
             // terminals
-            var letKeyword = ToTerm("let", nameof(Symbol.Let));
-            var varKeyword = ToTerm("var", nameof(Symbol.Var));
-            var assignOperator = ToTerm("=", nameof(Symbol.Assign));
-            var trueValue = ToTerm("true", nameof(Symbol.True));
-            var falseValue = ToTerm("false", nameof(Symbol.False));
+            var assignOperator = ToTerm("=", nameof(TokenKind.Assign));
+            var colon = ToTerm(":", nameof(TokenKind.Colon));
+            var letKeyword = ToTerm("let", nameof(TokenKind.Let));
+            var varKeyword = ToTerm("var", nameof(TokenKind.Var));
+            var trueValue = ToTerm("true", nameof(TokenKind.True));
+            var falseValue = ToTerm("false", nameof(TokenKind.False));
 
-            var nameIdentifier = TerminalFactory.CreateCSharpIdentifier(nameof(Symbol.NameIdentifier));
-            var stringValue = new StringLiteral(nameof(Symbol.String), "\"");
-            var integerValue = new NumberLiteral(nameof(Symbol.Int), NumberOptions.IntOnly);
+            MarkReservedWords("let", "var", "true", "false");
+
+            var nameIdentifier = TerminalFactory.CreateCSharpIdentifier(nameof(TokenKind.NameIdentifier));
+            var stringValue = new StringLiteral(nameof(TokenKind.String), "\"");
+            var integerValue = new NumberLiteral(nameof(TokenKind.Int), NumberOptions.IntOnly);
 
             // non-terminals
-            var compilationUnit = new NonTerminal(nameof(Symbol.CompilationUnit));
-            var statement = new NonTerminal(nameof(Symbol.Statement));
-            var declaration = new NonTerminal(nameof(Symbol.Declaration));
-            var valueDeclaration = new NonTerminal(nameof(Symbol.ValueDeclaration));
-            var variableDeclaration = new NonTerminal(nameof(Symbol.VariableDeclaration));
-            var expression = new NonTerminal(nameof(Symbol.Expression));
-            var constantExpression = new NonTerminal(nameof(Symbol.ConstantExpression));
-            var booleanValue = new NonTerminal(nameof(Symbol.Boolean));
+            var compilationUnit = new NonTerminal(nameof(TokenKind.CompilationUnit));
+            var statement = new NonTerminal(nameof(TokenKind.Statement));
+            var declaration = new NonTerminal(nameof(TokenKind.Declaration));
+            var valueDeclaration = new NonTerminal(nameof(TokenKind.ValueDeclaration));
+            var variableDeclaration = new NonTerminal(nameof(TokenKind.VariableDeclaration));
+            var expression = new NonTerminal(nameof(TokenKind.Expression));
+            var constantExpression = new NonTerminal(nameof(TokenKind.ConstantExpression));
+            var booleanValue = new NonTerminal(nameof(TokenKind.Bool));
+            var typeIdentifier = new NonTerminal(nameof(TokenKind.TypeIdentifier));
+            var typeNameIdentifier = new NonTerminal(nameof(TokenKind.TypeNameIdentifier));
 
             // derivations
             compilationUnit.Rule = statement;
             statement.Rule = declaration;
             declaration.Rule = valueDeclaration | variableDeclaration;
-            valueDeclaration.Rule = letKeyword + nameIdentifier + assignOperator + expression;
+            valueDeclaration.Rule =
+                letKeyword + nameIdentifier + typeIdentifier + assignOperator + expression
+                | letKeyword + nameIdentifier + assignOperator + expression;
+            typeIdentifier.Rule = colon + typeNameIdentifier;
+            typeNameIdentifier.Rule = nameIdentifier;
             variableDeclaration.Rule = varKeyword + nameIdentifier + assignOperator + expression;
             expression.Rule = constantExpression;
             constantExpression.Rule = integerValue | stringValue | booleanValue;
@@ -54,40 +63,50 @@ namespace Kool.Lang.Syntax
         {
             return node.Term.Name switch
             {
-                nameof(Symbol.CompilationUnit) => new CompilationUnit(
+                nameof(TokenKind.CompilationUnit) => new CompilationUnit(
                     node.ChildNodes.Select(Translate).Cast<Statement>().ToArray()),
 
-                nameof(Symbol.Statement) => Translate(node.ChildNodes.First()),
+                nameof(TokenKind.Statement) => Translate(node.ChildNodes.First()),
 
-                nameof(Symbol.Declaration) => Translate(node.ChildNodes.First()),
+                nameof(TokenKind.Declaration) => Translate(node.ChildNodes.First()),
 
-                nameof(Symbol.ValueDeclaration) => new ValueDeclaration(
+                nameof(TokenKind.ValueDeclaration)
+                    when node.ChildNodes[2].Term.Name == nameof(TokenKind.TypeIdentifier) =>
+                    new ValueDeclaration(
+                        (NameIdentifier)Translate(node.ChildNodes[1]),
+                        (TypeIdentifier)Translate(node.ChildNodes[2]),
+                        (Expression)Translate(node.ChildNodes[4])),
+
+                nameof(TokenKind.ValueDeclaration) => new ValueDeclaration(
                     (NameIdentifier)Translate(node.ChildNodes[1]),
                     (Expression)Translate(node.ChildNodes[3])),
 
-                nameof(Symbol.VariableDeclaration) => new VariableDeclaration(
+                nameof(TokenKind.VariableDeclaration) => new VariableDeclaration(
                     (NameIdentifier)Translate(node.ChildNodes[1]),
                     (Expression)Translate(node.ChildNodes[3])),
 
-                nameof(Symbol.NameIdentifier) => new NameIdentifier(node.Token.ValueString),
+                nameof(TokenKind.NameIdentifier) => new NameIdentifier(node.Token.ValueString),
 
-                nameof(Symbol.Expression) => Translate(node.ChildNodes[0]),
+                nameof(TokenKind.Expression) => Translate(node.ChildNodes[0]),
 
-                nameof(Symbol.ConstantExpression) => new ConstantExpression(
+                nameof(TokenKind.ConstantExpression) => new ConstantExpression(
                     (Literal)Translate(node.ChildNodes[0])),
 
-                nameof(Symbol.Int) => new IntValue((int)node.Token.Value),
+                nameof(TokenKind.TypeIdentifier) =>
+                    new TypeIdentifier(node.ChildNodes[1].ChildNodes[0].Token.ValueString),
 
-                nameof(Symbol.String) => new StringValue(node.Token.ValueString),
+                nameof(TokenKind.Int) => new IntValue((int)node.Token.Value),
 
-                nameof(Symbol.Boolean) => new BooleanValue(node.ChildNodes[0].Token.ValueString == "true"),
+                nameof(TokenKind.String) => new StringValue(node.Token.ValueString),
+
+                nameof(TokenKind.Bool) => new BooleanValue(node.ChildNodes[0].Token.ValueString == "true"),
 
                 _ => throw new NotSupportedException(
                     $"The token is not supported by this language version: {node.Term}")
             };
         }
 
-        private enum Symbol
+        private enum TokenKind
         {
             LineComment,
             BlockComment,
@@ -95,7 +114,6 @@ namespace Kool.Lang.Syntax
             Var,
             Assign,
             NameIdentifier,
-            Int,
             CompilationUnit,
             Statement,
             Declaration,
@@ -103,10 +121,14 @@ namespace Kool.Lang.Syntax
             VariableDeclaration,
             Expression,
             ConstantExpression,
+            Int,
             String,
+            Bool,
             True,
             False,
-            Boolean
+            TypeIdentifier,
+            Colon,
+            TypeNameIdentifier
         }
     }
 }
