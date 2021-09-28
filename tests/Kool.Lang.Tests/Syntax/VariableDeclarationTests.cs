@@ -80,5 +80,43 @@ namespace Kool.Lang.Tests.Syntax
 
             producedSyntaxNode.Should().Be(expectedSyntaxNode);
         }
+        
+        [Fact]
+        public void ParseWithType()
+        {
+            var text = @"var finished: Bool = false";
+            var result = ParserHelper.Parse(_grammar, text);
+
+            result.Status.Should().Be(ParseTreeStatus.Parsed);
+
+            var producedSyntaxNode = _grammar.Translate(result.Root);
+
+            var expectedSyntaxNode = new CompilationUnit(
+                new VariableDeclaration(
+                    new NameIdentifier("finished"),
+                    TypeIdentifier.Bool,
+                    new ConstantExpression(new BooleanValue(false))));
+
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
+        }
+        
+        [Fact]
+        public void ParseWithTypeInt()
+        {
+            var text = @"var finished: Int = 10";
+            var result = ParserHelper.Parse(_grammar, text);
+
+            result.Status.Should().Be(ParseTreeStatus.Parsed);
+
+            var producedSyntaxNode = _grammar.Translate(result.Root);
+
+            var expectedSyntaxNode = new CompilationUnit(
+                new VariableDeclaration(
+                    new NameIdentifier("finished"),
+                    TypeIdentifier.Int,
+                    new ConstantExpression(new IntValue(10))));
+
+            producedSyntaxNode.Should().Be(expectedSyntaxNode);
+        }
     }
 }
