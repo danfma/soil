@@ -524,8 +524,8 @@ let Counter = component!{ (props: JsObject with CounterProps): JsxElement => {
 }
 
 // maybe using types and macros
-[Component]
-inline class Counter {
+[macro:FuncComponent]
+class Counter {
   static operator func invoke(props: JsObject with CounterProps): JsxElement {
     let [count, setCount] = useState(props.initialCount ?? 0)
   
@@ -545,6 +545,39 @@ inline class Counter {
         <span>{count}</span>
         </button> type="button" onClick={increment}> + </button>
       </div>
+    }
+  }
+}
+
+
+// maybe using a bultin DSL
+[FuncComponent]
+object Counter implements IFuncComponent {
+  static operator func invoke(props: JsObject with CounterProps): JsxElement {
+    let [count, setCount] = useState(props.initialCount ?? 0)
+  
+    let decrement = useCallback(
+      { setCount({ it - 1 }) },
+      []
+    )
+
+    let increment = useCallback(
+      { setCount({ it + 1 }) },
+      []
+    )
+
+    return jsx {
+      div {
+        button(type="button", onClick=decrement) {
+          text " - "
+        }
+        span {
+          text count
+        }
+        button(type="button", onClick=increment) {
+          text " + "
+        }
+      }
     }
   }
 }
