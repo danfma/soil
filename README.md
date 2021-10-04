@@ -495,5 +495,89 @@ class Point(x: Int = 0, y: Int = 0) {
 }
 ```
 
+// Possible React Integration through macro and protocols ???
+```
+protocol interface CounterProps for JsObject {
+  let initialCount: Int? = null
+}
+
+let Counter = component!{ (props: JsObject with CounterProps): JsxElement => {
+  let [count, setCount] = useState(props.initialCount ?? 0)
+  
+  let decrement = useCallback(
+    { setCount({ it - 1 }) },
+    []
+  )
+  
+  let increment = useCallback(
+    { setCount({ it + 1 }) },
+    []
+  )
+
+  return jsx!{
+    <div>
+      <button type="button" onClick={decrement}> - </button>
+      <span>{count}</span>
+      </button> type="button" onClick={increment}> + </button>
+    </div>
+  }
+}
+
+// maybe using types and macros
+[Component]
+inline class Counter {
+  static operator func invoke(props: JsObject with CounterProps): JsxElement {
+    let [count, setCount] = useState(props.initialCount ?? 0)
+  
+    let decrement = useCallback(
+      { setCount({ it - 1 }) },
+      []
+    )
+
+    let increment = useCallback(
+      { setCount({ it + 1 }) },
+      []
+    )
+
+    return jsx!{
+      <div>
+        <button type="button" onClick={decrement}> - </button>
+        <span>{count}</span>
+        </button> type="button" onClick={increment}> + </button>
+      </div>
+    }
+  }
+}
+
+// transpiled to javascript ES2015
+export class CounterPropsProtocol {
+  static get_initialCount(source, defaultValue = null) {
+    return source.initialCount ?? defaultValue
+  }
+}
+
+const Counter = (props) => {
+  const [count, setCount] = useState(CounterPropsProtocol.get_initialCount(props) ?? 0);
+  
+  const decrement = useCallback(
+    () => { setCount(it => it - 1) },
+    []
+  );
+  
+  const increment = useCallback(
+    () => { setCount(it => it + 1) },
+    []
+  );
+
+  return (
+    <div>
+      <button type="button" onClick={decrement}> - </button>
+      <span>{count}</span>
+      </button> type="button" onClick={increment}> + </button>
+    </div>
+  );
+};
+```
+
 > TODO Describe the language here
 
