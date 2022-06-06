@@ -13,11 +13,11 @@ EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ACC4C037-5028-408D-8D33-8B159DA77B09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kool.Lang", "src\Kool.Lang\Kool.Lang.csproj", "{9F9B0481-B730-4B6C-8B31-E8672865211A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soil.Lang", "src\Soil.Lang\Soil.Lang.csproj", "{9F9B0481-B730-4B6C-8B31-E8672865211A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{50BFC87D-F546-44AD-8FF9-24079A3A03A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kool.Lang.Tests", "tests\Kool.Lang.Tests\Kool.Lang.Tests.csproj", "{8E6A276D-F533-4AD4-9329-06A56A49F3CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soil.Lang.Tests", "tests\Soil.Lang.Tests\Soil.Lang.Tests.csproj", "{8E6A276D-F533-4AD4-9329-06A56A49F3CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
