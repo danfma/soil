@@ -29,7 +29,7 @@ Soil is almost the Kotlin language with a few changes in the syntax and, obvious
 creating it for fun, I'm a father of a newborn baby (yes, I am not sleeping well by these days!), thus I don't have
 enough time to create something better for now...
 
-### Value declaration (non-mutable)
+### Value declaration (non-reassignable variables)
 
 - `val x = 10`
 - `val x: Int = 10`
