@@ -1,12 +1,13 @@
-# Kool
+# Soil
 
-Experimental compiler for the Kool language (a Kotlin-based language - thank you, JetBrains, I love your language and
-yours IDEs, tools! S2) written in C# (which I love to use it too!
-Thank you, Microsoft!).
+Playground to create a new language named Soil which should be compiled to 
+.NET, JavaScript, and maybe others.
+
+The language is hardly inspired by the Kotlin language, TypeScript, and C#.
 
 > This project is for FUN, LEARNING, and EXPERIMENTING with the knowledge area of
 > Compilers in Computer Science (except that I will start skipping the creation of
-> the parser by myself because I really want to play with the generated stuff. And,
+> the parser by myself because I really want to work with the generated stuff. And,
 > that's is the reason why I converted the project from F# to C# again. Maybe in the
 > future I do that! Maybe... :D).
 
@@ -15,26 +16,26 @@ Thank you, Microsoft!).
 - [x] Investigate a parser to play with (using Irony for now);
 - [x] Investigate how to parse and roughly generate the AST;
 - [x] Investigate how to create partial tests to verify the generated AST;
-- [ ] Finish to watch the videos from Immo Landwerth on YouTube about the creation of the Misky programming language.
-  That should give me some ideas of how to create the .NET libraries;
-- [ ] Define the Kool language;
-- [ ] Create a Kool language parser;
-- [ ] Transpile to JavaScript (or maybe TypeScript)?
-- [ ] Transpile to C# (or maybe generate code directly with Roslyn)?
+- [ ] Create a semantic analyzer to verify the generated AST;
+- [ ] Translate code to JavaScript;
+- [ ] Translate code to C#;
+- [ ] Translate code to .NET IL;
+- [ ] Translate code to WebAssembly (maybe);
+- [ ] Check other possible backend targets;
 
-## The Kool language
+## The Soil language
 
-Kool is almost the Kotlin language with a few changes in the syntax and, obviously, a smaller set of features. I'm
+Soil is almost the Kotlin language with a few changes in the syntax and, obviously, a smaller set of features. I'm
 creating it for fun, I'm a father of a newborn baby (yes, I am not sleeping well by these days!), thus I don't have
 enough time to create something better for now...
 
 ### Value declaration (non-mutable)
 
-- `let x = 10`
-- `let x: Int = 10`
-- `let name = "Daniel"`
-- `let finished = false`
-- `let finished: Bool = default`
+- `val x = 10`
+- `val x: Int = 10`
+- `val name = "Daniel"`
+- `val finished = false`
+- `val finished: Bool = default`
 
 ### Variable declaration (mutable)
 
@@ -72,8 +73,8 @@ as `nullable` to make that work.
 For example:
 
 ```
-let checked: Bool? = null
-let enabled: Bool = null // it will show an error
+val checked: Bool? = null
+val enabled: Bool = null // it will show an error
 ```
 
 ### Expressions
@@ -81,9 +82,9 @@ let enabled: Bool = null // it will show an error
 * Example: sum of two numbers:
 
 ```
-let x = 10
-let y = 20
-let sum = x + y
+val x = 10
+val y = 20
+val sum = x + y
 ```
 
 * Example: sum of two numbers using a single variable:
@@ -224,7 +225,7 @@ for i in (0..10) {
 }
 
 // equivalent to the following javascript-code
-for (let i = 0; i < 11; i += 1) {
+for (val i = 0; i < 11; i += 1) {
   if (i !== 0 && i === 4) {
     i += 5;
     continue;
@@ -238,13 +239,13 @@ for (let i = 0; i < 11; i += 1) {
 
 ```
 // ternary-like
-let grade = if points >= 9 then 'A' else 'B'
+val grade = if points >= 9 then 'A' else 'B'
 
 // chained ifs
-let grade = if points >= 9 then 'A' else if points >= 8 then 'B' else 'C'
+val grade = if points >= 9 then 'A' else if points >= 8 then 'B' else 'C'
 
 // multi-line chained ifs
-let grade =
+val grade =
   if points >= 9 then 'A'
   else if points >= 8 then 'B'
   else if points >= 7 then 'C'
@@ -254,7 +255,7 @@ let grade =
 #### when expression
 
 ```
-let numberAsString = when digit {
+val numberAsString = when digit {
   0 => "zero"
   1 => "one"
   2 => "two"
@@ -279,7 +280,7 @@ import "MyLib" use Some:Namespace
 func sum(a: Int, b: Int): Int => a + b
 func subtract(a: Int, b: Int): Int => a - b
 
-record class Point(let x: Int, let y: Int) {
+record class Point(val x: Int, val y: Int) {
   prop length: Int => sqrt(x * x + y * y) as Int
 }
 ```
@@ -290,7 +291,7 @@ All classes are reference types by default.
 
 ```
 class Person {
-  // mutable fields (use let for readonly)
+  // mutable fields (use val for readonly)
   var name: String = ""
   var surname: String? = null
   var age: Int = 0
@@ -311,7 +312,7 @@ class Person {
   }
 }
 
-let person = Person()
+val person = Person()
 person.setName("John", "Doe")
 ```
 
@@ -329,8 +330,8 @@ func extend(length: Length): Length {
   return length
 }
 
-let source = Length()
-let result = extend(source)
+val source = Length()
+val result = extend(source)
 
 print(source.value) // prints 0
 print(result.value) // prints 1
@@ -380,7 +381,7 @@ func sum<T>(a: T, b: T): Int
 ## Samples
 
 ```
-// complete form
+// compvale form
 func fibonacci(n: UInt): UInt {
   return 
     if n <= 2 then n
@@ -447,8 +448,8 @@ func sum(array: Int[]): Int {
 
 ```
 record class Point(
-  let x: Int = 0
-  let y: Int = 0
+  val x: Int = 0
+  val y: Int = 0
 ) {
   constructor(other: Point) 
     : this(other.x, other.y)
@@ -458,8 +459,8 @@ record class Point(
 
 // same as
 class Point(x: Int = 0, y: Int = 0) {
-  private let _x: Int
-  private let _y: Int
+  private val _x: Int
+  private val _y: Int
   
   init {
     _x = x
@@ -498,18 +499,18 @@ class Point(x: Int = 0, y: Int = 0) {
 // Possible React Integration through macro and protocols ???
 ```
 protocol interface CounterProps for JsObject {
-  let initialCount: Int? = null
+  val initialCount: Int? = null
 }
 
-let Counter = component!{ (props: JsObject with CounterProps): JsxElement => {
-  let [count, setCount] = useState(props.initialCount ?? 0)
+val Counter = component!{ (props: JsObject with CounterProps): JsxElement => {
+  val [count, setCount] = useState(props.initialCount ?? 0)
   
-  let decrement = useCallback(
+  val decrement = useCallback(
     { setCount({ it - 1 }) },
     []
   )
   
-  let increment = useCallback(
+  val increment = useCallback(
     { setCount({ it + 1 }) },
     []
   )
@@ -527,14 +528,14 @@ let Counter = component!{ (props: JsObject with CounterProps): JsxElement => {
 [macro:FuncComponent]
 class Counter {
   static operator func invoke(props: JsObject with CounterProps): JsxElement {
-    let [count, setCount] = useState(props.initialCount ?? 0)
+    val [count, setCount] = useState(props.initialCount ?? 0)
   
-    let decrement = useCallback(
+    val decrement = useCallback(
       { setCount({ it - 1 }) },
       []
     )
 
-    let increment = useCallback(
+    val increment = useCallback(
       { setCount({ it + 1 }) },
       []
     )
@@ -554,14 +555,14 @@ class Counter {
 [FuncComponent]
 object Counter implements IFuncComponent {
   static operator func invoke(props: JsObject with CounterProps): JsxElement {
-    let [count, setCount] = useState(props.initialCount ?? 0)
+    val [count, setCount] = useState(props.initialCount ?? 0)
   
-    let decrement = useCallback(
+    val decrement = useCallback(
       { setCount({ it - 1 }) },
       []
     )
 
-    let increment = useCallback(
+    val increment = useCallback(
       { setCount({ it + 1 }) },
       []
     )

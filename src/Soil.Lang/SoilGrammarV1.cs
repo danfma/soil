@@ -21,7 +21,7 @@ public class SoilGrammarV1 : Grammar
         var trueValue = ToTerm("true", nameof(TokenKind.True));
         var falseValue = ToTerm("false", nameof(TokenKind.False));
 
-        var letKeyword = ToTerm("let", nameof(TokenKind.Let));
+        var valKeyword = ToTerm("val", nameof(TokenKind.Val));
         var varKeyword = ToTerm("var", nameof(TokenKind.Var));
 
         // operators
@@ -112,8 +112,8 @@ public class SoilGrammarV1 : Grammar
             nameIdentifier;
 
         valueDeclaration.Rule =
-            letKeyword + nameIdentifier + typeIdentifier + assignOperator + expression
-            | letKeyword + nameIdentifier + assignOperator + expression;
+            valKeyword + nameIdentifier + typeIdentifier + assignOperator + expression
+            | valKeyword + nameIdentifier + assignOperator + expression;
 
         variableDeclaration.Rule =
             varKeyword + nameIdentifier + typeIdentifier + assignOperator + expression
@@ -223,7 +223,7 @@ public class SoilGrammarV1 : Grammar
     {
         LineComment,
         BlockComment,
-        Let,
+        Val,
         Var,
         Colon,
         Assign,

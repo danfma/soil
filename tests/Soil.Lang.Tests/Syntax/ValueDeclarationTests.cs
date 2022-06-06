@@ -12,7 +12,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseBooleanTrueValueDeclaration()
     {
-        var text = @"let finished = true";
+        var text = @"val finished = true";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -30,7 +30,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseBooleanFalseValueDeclaration()
     {
-        var text = @"let finished = false";
+        var text = @"val finished = false";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -48,7 +48,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseBooleanWithTypeValue()
     {
-        var text = @"let finished: Bool = false";
+        var text = @"val finished: Bool = false";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -67,7 +67,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseIntValueDeclaration()
     {
-        var text = "let x = 10";
+        var text = "val x = 10";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -85,7 +85,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseIntValueWithTypeDeclaration()
     {
-        var text = "let x: Int = 10";
+        var text = "val x: Int = 10";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -104,7 +104,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseStringValueDeclaration()
     {
-        var text = @"let name = ""John Doe""";
+        var text = @"val name = ""John Doe""";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -122,7 +122,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseStringValueWithTypeDeclaration()
     {
-        var text = @"let name: String = ""John Doe""";
+        var text = @"val name: String = ""John Doe""";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -141,7 +141,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseVariableReassignment()
     {
-        var text = @"let finished: Bool = other";
+        var text = @"val finished: Bool = other";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
@@ -160,7 +160,7 @@ public class ValueDeclarationTests
     [Fact]
     public void ParseExpressionAssignment()
     {
-        var text = @"let finished: Int = 1 + 2 * otherValue";
+        var text = @"val finished: Int = 1 + 2 * otherValue";
         var result = ParserHelper.Parse(_grammar, text);
 
         result.Status.Should().Be(ParseTreeStatus.Parsed);
